@@ -1,13 +1,13 @@
 {
-  "name": "APPNAME",
+  "name": "fruitydropz",
   "private": true,
   "packageManager": "pnpm@10.30.3",
   "engines": { "node": ">=22" },
   "pnpm": { "onlyBuiltDependencies": ["esbuild"] },
   "scripts": {
-    "dev": "pnpm --filter @APPNAME/web dev",
-    "build": "pnpm --filter @APPNAME/web build",
-    "preview": "pnpm --filter @APPNAME/web preview",
-    "typecheck": "pnpm --filter @APPNAME/web exec tsc -b"
+    "dev": "pnpm --filter @fruitydropz/web dev",
+    "build": "pnpm --filter @fruitydropz/web build",
+    "preview": "pnpm --filter @fruitydropz/web preview",
+    "typecheck": "pnpm --filter @fruitydropz/web exec tsc -b"
   }
 }

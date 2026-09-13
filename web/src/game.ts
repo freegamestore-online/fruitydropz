@@ -10,7 +10,6 @@ const BASKET_SPEED = 340;
 // ─── Fruit Definitions ────────────────────────────────────────────────────────
 interface FruitDef {
   label: string;
-  emoji: string;
   color: number;
   shine: number;
   dark: number;
@@ -19,19 +18,18 @@ interface FruitDef {
 }
 
 const FRUITS: FruitDef[] = [
-  { label: "Apple",      emoji: "🍎", color: 0xe63946, shine: 0xff8fa3, dark: 0xb02030, pts: 1, r: 18 },
-  { label: "Lemon",      emoji: "🍋", color: 0xffd60a, shine: 0xfff07c, dark: 0xc4a000, pts: 2, r: 16 },
-  { label: "Grape",      emoji: "🍇", color: 0x9b5de5, shine: 0xd4aaff, dark: 0x6a3ab0, pts: 3, r: 14 },
-  { label: "Orange",     emoji: "🍊", color: 0xf77f00, shine: 0xffc06e, dark: 0xb85c00, pts: 2, r: 17 },
-  { label: "Strawberry", emoji: "🍓", color: 0xff4d6d, shine: 0xffb3c1, dark: 0xc0002a, pts: 1, r: 15 },
-  { label: "Blueberry",  emoji: "🫐", color: 0x4361ee, shine: 0x9db4ff, dark: 0x2a3faa, pts: 3, r: 13 },
-  { label: "Watermelon", emoji: "🍉", color: 0x2dc653, shine: 0x80ffaa, dark: 0x1a8a38, pts: 4, r: 20 },
-  { label: "Cherry",     emoji: "🍒", color: 0xc0392b, shine: 0xff8a80, dark: 0x7b1a12, pts: 2, r: 14 },
+  { label: "Apple",      color: 0xe63946, shine: 0xff8fa3, dark: 0xb02030, pts: 1, r: 18 },
+  { label: "Lemon",      color: 0xffd60a, shine: 0xfff07c, dark: 0xc4a000, pts: 2, r: 16 },
+  { label: "Grape",      color: 0x9b5de5, shine: 0xd4aaff, dark: 0x6a3ab0, pts: 3, r: 14 },
+  { label: "Orange",     color: 0xf77f00, shine: 0xffc06e, dark: 0xb85c00, pts: 2, r: 17 },
+  { label: "Strawberry", color: 0xff4d6d, shine: 0xffb3c1, dark: 0xc0002a, pts: 1, r: 15 },
+  { label: "Blueberry",  color: 0x4361ee, shine: 0x9db4ff, dark: 0x2a3faa, pts: 3, r: 13 },
+  { label: "Watermelon", color: 0x2dc653, shine: 0x80ffaa, dark: 0x1a8a38, pts: 4, r: 20 },
+  { label: "Cherry",     color: 0xc0392b, shine: 0xff8a80, dark: 0x7b1a12, pts: 2, r: 14 },
 ];
 
 const STAR_FRUIT: FruitDef = {
   label: "Star",
-  emoji: "⭐",
   color: 0xfbbf24,
   shine: 0xfef08a,
   dark: 0xb45309,
@@ -55,23 +53,18 @@ function buildFruitTex(scene: Phaser.Scene, key: string, def: FruitDef): void {
   const cy = size / 2;
   const g = scene.make.graphics({ add: false });
 
-  // Drop shadow
   g.fillStyle(0x000000, 0.2);
   g.fillCircle(cx + 2, cy + 3, r - 1);
 
-  // Dark base rim
   g.fillStyle(def.dark, 1);
   g.fillCircle(cx, cy, r);
 
-  // Main color fill
   g.fillStyle(def.color, 1);
   g.fillCircle(cx, cy, r - 2);
 
-  // Shine highlight
   g.fillStyle(def.shine, 0.65);
   g.fillCircle(cx - r * 0.28, cy - r * 0.28, r * 0.4);
 
-  // Specular dot
   g.fillStyle(0xffffff, 0.9);
   g.fillCircle(cx - r * 0.2, cy - r * 0.22, r * 0.13);
 
@@ -87,28 +80,25 @@ function buildStarTex(scene: Phaser.Scene): void {
   const cy = size / 2;
   const g = scene.make.graphics({ add: false });
 
-  // Outer glow ring
   g.fillStyle(0xfef08a, 0.3);
   g.fillCircle(cx, cy, r + 5);
 
-  // Star points
   const outer = r;
   const inner = r * 0.42;
-  const pts: { x: number; y: number }[] = [];
-  const pts2: { x: number; y: number }[] = [];
+  const ptsA: { x: number; y: number }[] = [];
+  const ptsB: { x: number; y: number }[] = [];
   for (let i = 0; i < 10; i++) {
     const ang = (i * Math.PI) / 5 - Math.PI / 2;
-    const rad = i % 2 === 0 ? outer : inner;
-    pts.push({ x: cx + Math.cos(ang) * rad, y: cy + Math.sin(ang) * rad });
-    const rad2 = i % 2 === 0 ? outer - 2 : inner;
-    pts2.push({ x: cx + Math.cos(ang) * rad2, y: cy + Math.sin(ang) * rad2 });
+    const radA = i % 2 === 0 ? outer : inner;
+    ptsA.push({ x: cx + Math.cos(ang) * radA, y: cy + Math.sin(ang) * radA });
+    const radB = i % 2 === 0 ? outer - 2 : inner;
+    ptsB.push({ x: cx + Math.cos(ang) * radB, y: cy + Math.sin(ang) * radB });
   }
   g.fillStyle(STAR_FRUIT.dark, 1);
-  g.fillPoints(pts, true);
+  g.fillPoints(ptsA, true);
   g.fillStyle(STAR_FRUIT.color, 1);
-  g.fillPoints(pts2, true);
+  g.fillPoints(ptsB, true);
 
-  // Shine
   g.fillStyle(STAR_FRUIT.shine, 0.75);
   g.fillCircle(cx - r * 0.22, cy - r * 0.28, r * 0.32);
   g.fillStyle(0xffffff, 0.85);
@@ -126,19 +116,15 @@ function buildBombTex(scene: Phaser.Scene): void {
   const cy = size / 2 + 2;
   const g = scene.make.graphics({ add: false });
 
-  // Shadow
   g.fillStyle(0x000000, 0.22);
   g.fillCircle(cx + 2, cy + 3, r - 1);
 
-  // Body
   g.fillStyle(0x1a1a2e, 1);
   g.fillCircle(cx, cy, r);
 
-  // Sheen
   g.fillStyle(0x3a3a5c, 0.5);
   g.fillCircle(cx - r * 0.28, cy - r * 0.28, r * 0.38);
 
-  // Fuse cord
   g.lineStyle(2.5, 0x888899, 1);
   g.beginPath();
   g.moveTo(cx + r * 0.45, cy - r * 0.6);
@@ -146,7 +132,6 @@ function buildBombTex(scene: Phaser.Scene): void {
   g.lineTo(cx + r * 0.5, cy - r * 1.28);
   g.strokePath();
 
-  // Spark
   g.fillStyle(0xfbbf24, 1);
   g.fillCircle(cx + r * 0.5, cy - r * 1.33, 5);
   g.fillStyle(0xfef3c7, 1);
@@ -162,29 +147,23 @@ function buildBasketTex(scene: Phaser.Scene): void {
   const H = 34;
   const g = scene.make.graphics({ add: false });
 
-  // Shadow
   g.fillStyle(0x000000, 0.18);
   g.fillRoundedRect(3, 4, W, H, 9);
 
-  // Outer rim (dark wood)
   g.fillStyle(0x78350f, 1);
   g.fillRoundedRect(0, 0, W, H, 9);
 
-  // Inner body
   g.fillStyle(0xfbbf24, 1);
   g.fillRoundedRect(3, 3, W - 6, H - 6, 7);
 
-  // Weave lines horizontal
   g.lineStyle(1.5, 0xd97706, 0.65);
   for (let y = 9; y < H - 3; y += 7) {
     g.strokeLineShape(new Phaser.Geom.Line(5, y, W - 5, y));
   }
-  // Weave lines vertical
   for (let x = 13; x < W - 5; x += 12) {
     g.strokeLineShape(new Phaser.Geom.Line(x, 4, x, H - 4));
   }
 
-  // Top highlight strip
   g.fillStyle(0xfde68a, 0.55);
   g.fillRoundedRect(5, 4, W - 10, 7, 4);
 
@@ -195,13 +174,10 @@ function buildBasketTex(scene: Phaser.Scene): void {
 function buildTreeTex(scene: Phaser.Scene): void {
   if (scene.textures.exists("tree")) return;
   const g = scene.make.graphics({ add: false });
-  // Trunk
   g.fillStyle(0x78350f, 1);
   g.fillRect(18, 52, 14, 28);
-  // Canopy shadow
   g.fillStyle(0x14532d, 0.5);
   g.fillTriangle(26, 4, 2, 44, 50, 44);
-  // Main canopy layers
   g.fillStyle(0x15803d, 1);
   g.fillTriangle(25, 0, 0, 40, 50, 40);
   g.fillStyle(0x22c55e, 1);
@@ -224,16 +200,12 @@ function buildCloudTex(scene: Phaser.Scene): void {
   g.destroy();
 }
 
-function buildGroundTex(scene: Phaser.Scene): void {
-  if (scene.textures.exists("ground")) return;
+function buildParticleTex(scene: Phaser.Scene): void {
+  if (scene.textures.exists("particle")) return;
   const g = scene.make.graphics({ add: false });
-  // Grass top
-  g.fillStyle(0x4ade80, 1);
-  g.fillRect(0, 0, VW, 12);
-  // Soil body
-  g.fillStyle(0x92400e, 1);
-  g.fillRect(0, 12, VW, 20);
-  g.generateTexture("ground", VW, 32);
+  g.fillStyle(0xffffff, 1);
+  g.fillCircle(6, 6, 6);
+  g.generateTexture("particle", 12, 12);
   g.destroy();
 }
 
@@ -320,14 +292,13 @@ class MenuScene extends Phaser.Scene {
   }
 
   create(): void {
-    // Build all shared textures
     FRUITS.forEach((fr, i) => buildFruitTex(this, `fruit_${i}`, fr));
     buildStarTex(this);
     buildBombTex(this);
     buildBasketTex(this);
     buildTreeTex(this);
     buildCloudTex(this);
-    buildGroundTex(this);
+    buildParticleTex(this);
 
     this.drawBackground();
     this.drawScenery();
@@ -337,13 +308,10 @@ class MenuScene extends Phaser.Scene {
 
   private drawBackground(): void {
     const bg = this.add.graphics();
-    // Sky
     bg.fillGradientStyle(0x0ea5e9, 0x0ea5e9, 0x7dd3fc, 0x7dd3fc, 1);
     bg.fillRect(0, 0, VW, VH * 0.74);
-    // Ground
     bg.fillGradientStyle(0x4ade80, 0x4ade80, 0x16a34a, 0x16a34a, 1);
     bg.fillRect(0, VH * 0.74, VW, VH * 0.26);
-    // Ground strip
     bg.fillStyle(0x15803d, 1);
     bg.fillRect(0, VH - 22, VW, 22);
   }
@@ -380,7 +348,7 @@ class MenuScene extends Phaser.Scene {
       { fi: 7, x: VW / 2,  y: 148 },
     ];
     for (const p of positions) {
-      const img = this.add.image(p.x, p.y, `fruit_${p.fi}`).setAlpha(0.7).setScale(1.25);
+      const img = this.add.image(p.x, p.y, `fruit_${p.fi}`).setAlpha(0.72).setScale(1.25);
       this.tweens.add({
         targets: img,
         y: p.y - 18,
@@ -394,15 +362,14 @@ class MenuScene extends Phaser.Scene {
   }
 
   private drawUI(): void {
-    // Title panel
     const panelBg = this.add.graphics();
-    panelBg.fillStyle(0x000000, 0.18);
-    panelBg.fillRoundedRect(VW / 2 - 158, 195, 316, 118, 18);
+    panelBg.fillStyle(0x000000, 0.22);
+    panelBg.fillRoundedRect(VW / 2 - 162, 192, 324, 124, 20);
 
     this.add
-      .text(VW / 2, 226, "FruityDrop", {
+      .text(VW / 2, 226, "🍉 FruityDrop", {
         fontFamily: "Fraunces, serif",
-        fontSize: "58px",
+        fontSize: "52px",
         color: "#ffffff",
         stroke: "#14532d",
         strokeThickness: 8,
@@ -410,40 +377,38 @@ class MenuScene extends Phaser.Scene {
       .setOrigin(0.5);
 
     this.add
-      .text(VW / 2, 290, "Catch the fruit! Dodge the bombs! 🍉", {
+      .text(VW / 2, 290, "Catch fruit • Dodge bombs • Beat your best!", {
         fontFamily: "Manrope, sans-serif",
-        fontSize: "14px",
+        fontSize: "13px",
         color: "#e0f2fe",
         wordWrap: { width: 300 },
         align: "center",
       })
       .setOrigin(0.5);
 
-    // High score badge
     const hs = parseInt(localStorage.getItem(HS_KEY) ?? "0", 10);
-    let nextY = 318;
+    let nextY = 328;
     if (hs > 0) {
       const hsBg = this.add.graphics();
-      hsBg.fillStyle(0x78350f, 0.88);
-      hsBg.fillRoundedRect(VW / 2 - 80, nextY, 160, 34, 17);
+      hsBg.fillStyle(0x78350f, 0.9);
+      hsBg.fillRoundedRect(VW / 2 - 82, nextY, 164, 36, 18);
       this.add
-        .text(VW / 2, nextY + 17, `🏆  Best: ${hs}`, {
+        .text(VW / 2, nextY + 18, `🏆  Best: ${hs}`, {
           fontFamily: "Manrope, sans-serif",
-          fontSize: "16px",
+          fontSize: "17px",
           color: "#fde68a",
           fontStyle: "bold",
         })
         .setOrigin(0.5);
-      nextY += 48;
+      nextY += 52;
     }
 
-    // Play button
     const btnY = nextY + 4;
     const btnBg = this.add.graphics();
     btnBg.fillStyle(0x15803d, 1);
-    btnBg.fillRoundedRect(VW / 2 - 105, btnY, 210, 62, 31);
+    btnBg.fillRoundedRect(VW / 2 - 108, btnY, 216, 64, 32);
     btnBg.fillStyle(0x22c55e, 1);
-    btnBg.fillRoundedRect(VW / 2 - 103, btnY - 3, 206, 58, 29);
+    btnBg.fillRoundedRect(VW / 2 - 106, btnY - 4, 212, 60, 30);
 
     const btnTxt = this.add
       .text(VW / 2, btnY + 28, "▶  Play Now", {
@@ -459,23 +424,22 @@ class MenuScene extends Phaser.Scene {
       targets: [btnBg, btnTxt],
       scaleX: 1.04,
       scaleY: 1.04,
-      duration: 800,
+      duration: 820,
       yoyo: true,
       repeat: -1,
       ease: "Sine.easeInOut",
     });
 
-    // Hint text
-    const hintY = btnY + 76;
+    const hintY = btnY + 80;
     this.add
-      .text(VW / 2, hintY, "🖱️ mouse/touch  •  ← → arrow keys", {
+      .text(VW / 2, hintY, "🖱️ mouse / touch  •  ← → arrow keys", {
         fontFamily: "Manrope, sans-serif",
         fontSize: "12px",
         color: "#bae6fd",
       })
       .setOrigin(0.5);
     this.add
-      .text(VW / 2, hintY + 18, "Miss 3 fruits = game over  •  Bombs cost a life!", {
+      .text(VW / 2, hintY + 20, "Miss 3 fruits = game over  •  Bombs cost a life!", {
         fontFamily: "Manrope, sans-serif",
         fontSize: "11px",
         color: "#bae6fd",
@@ -484,8 +448,7 @@ class MenuScene extends Phaser.Scene {
       })
       .setOrigin(0.5);
 
-    // Mini fruit legend
-    const legendY = hintY + 55;
+    const legendY = hintY + 60;
     this.add
       .text(VW / 2, legendY, "Points per fruit:", {
         fontFamily: "Manrope, sans-serif",
@@ -497,8 +460,9 @@ class MenuScene extends Phaser.Scene {
     const legendFruits = [0, 1, 2, 6];
     legendFruits.forEach((fi, i) => {
       const lx = VW / 2 - 60 + i * 42;
+      const fr = FRUITS[fi];
+      if (!fr) return;
       const img = this.add.image(lx, legendY + 26, `fruit_${fi}`).setScale(0.95);
-      const fr = FRUITS[fi]!;
       this.add
         .text(lx, legendY + 44, `+${fr.pts}`, {
           fontFamily: "Manrope, sans-serif",
@@ -517,10 +481,9 @@ class MenuScene extends Phaser.Scene {
       });
     });
 
-    // Star bonus hint
-    const starImg = this.add.image(VW / 2, legendY + 68, "star_fruit").setScale(0.85);
+    const starImg = this.add.image(VW / 2 - 28, legendY + 68, "star_fruit").setScale(0.85);
     this.add
-      .text(VW / 2 + 22, legendY + 68, `= +${STAR_FRUIT.pts} bonus!`, {
+      .text(VW / 2 + 10, legendY + 68, `= +${STAR_FRUIT.pts} bonus!`, {
         fontFamily: "Manrope, sans-serif",
         fontSize: "12px",
         color: "#fde68a",
@@ -529,8 +492,8 @@ class MenuScene extends Phaser.Scene {
       .setOrigin(0, 0.5);
     this.tweens.add({
       targets: starImg,
-      scaleX: 1.1,
-      scaleY: 1.1,
+      scaleX: 1.12,
+      scaleY: 1.12,
       duration: 450,
       yoyo: true,
       repeat: -1,
@@ -544,6 +507,201 @@ class MenuScene extends Phaser.Scene {
     btnTxt.on("pointerdown", start);
     this.input.keyboard?.once("keydown-SPACE", start);
     this.input.keyboard?.once("keydown-ENTER", start);
+  }
+}
+
+// ─── GameOverScene ────────────────────────────────────────────────────────────
+
+class GameOverScene extends Phaser.Scene {
+  constructor() {
+    super("gameover");
+  }
+
+  create(data: { score: number; isNewBest: boolean }): void {
+    const score = data.score ?? 0;
+    const isNewBest = data.isNewBest ?? false;
+
+    // Dim overlay
+    const overlay = this.add.graphics();
+    overlay.fillStyle(0x000000, 0.72);
+    overlay.fillRect(0, 0, VW, VH);
+
+    // Panel
+    const panelH = isNewBest ? 360 : 320;
+    const panelY = VH / 2 - panelH / 2;
+    const panel = this.add.graphics();
+    panel.fillStyle(0x1e3a5f, 1);
+    panel.fillRoundedRect(VW / 2 - 155, panelY, 310, panelH, 24);
+    panel.fillStyle(0x2563eb, 0.5);
+    panel.fillRoundedRect(VW / 2 - 153, panelY + 2, 306, panelH - 4, 22);
+
+    // Fruit confetti
+    this.spawnConfetti();
+
+    let y = panelY + 44;
+
+    // Title
+    const titleTxt = isNewBest ? "🎉 New Best!" : "Game Over!";
+    this.add
+      .text(VW / 2, y, titleTxt, {
+        fontFamily: "Fraunces, serif",
+        fontSize: "40px",
+        color: isNewBest ? "#fbbf24" : "#f87171",
+        stroke: "#000000",
+        strokeThickness: 5,
+      })
+      .setOrigin(0.5);
+    y += 56;
+
+    if (isNewBest) {
+      this.add
+        .text(VW / 2, y, "You crushed your record! 🏆", {
+          fontFamily: "Manrope, sans-serif",
+          fontSize: "14px",
+          color: "#fde68a",
+        })
+        .setOrigin(0.5);
+      y += 32;
+    }
+
+    // Score
+    this.add
+      .text(VW / 2, y, "Score", {
+        fontFamily: "Manrope, sans-serif",
+        fontSize: "16px",
+        color: "#93c5fd",
+      })
+      .setOrigin(0.5);
+    y += 26;
+
+    const scoreTxt = this.add
+      .text(VW / 2, y, "0", {
+        fontFamily: "Fraunces, serif",
+        fontSize: "64px",
+        color: "#ffffff",
+        stroke: "#1e3a5f",
+        strokeThickness: 6,
+      })
+      .setOrigin(0.5)
+      .setScale(0.1);
+
+    this.tweens.add({
+      targets: scoreTxt,
+      scaleX: 1,
+      scaleY: 1,
+      duration: 420,
+      ease: "Back.easeOut",
+      onUpdate: (tween) => {
+        const val = Math.round(tween.progress * score);
+        scoreTxt.setText(String(val));
+      },
+      onComplete: () => {
+        scoreTxt.setText(String(score));
+      },
+    });
+    y += 74;
+
+    // Best
+    const best = parseInt(localStorage.getItem(HS_KEY) ?? "0", 10);
+    this.add
+      .text(VW / 2, y, `Best: ${best}`, {
+        fontFamily: "Manrope, sans-serif",
+        fontSize: "16px",
+        color: "#fde68a",
+        fontStyle: "bold",
+      })
+      .setOrigin(0.5);
+    y += 44;
+
+    // Play Again button
+    const btnBg = this.add.graphics();
+    btnBg.fillStyle(0x15803d, 1);
+    btnBg.fillRoundedRect(VW / 2 - 108, y, 216, 58, 29);
+    btnBg.fillStyle(0x22c55e, 1);
+    btnBg.fillRoundedRect(VW / 2 - 106, y - 3, 212, 54, 27);
+
+    const btnTxt = this.add
+      .text(VW / 2, y + 26, "▶  Play Again", {
+        fontFamily: "Manrope, sans-serif",
+        fontSize: "24px",
+        color: "#ffffff",
+        fontStyle: "bold",
+      })
+      .setOrigin(0.5)
+      .setInteractive({ useHandCursor: true });
+
+    this.tweens.add({
+      targets: [btnBg, btnTxt],
+      scaleX: 1.04,
+      scaleY: 1.04,
+      duration: 800,
+      yoyo: true,
+      repeat: -1,
+      ease: "Sine.easeInOut",
+    });
+
+    y += 72;
+
+    // Menu link
+    const menuTxt = this.add
+      .text(VW / 2, y, "← Main Menu", {
+        fontFamily: "Manrope, sans-serif",
+        fontSize: "15px",
+        color: "#93c5fd",
+      })
+      .setOrigin(0.5)
+      .setInteractive({ useHandCursor: true });
+
+    menuTxt.on("pointerover", () => menuTxt.setColor("#ffffff"));
+    menuTxt.on("pointerout", () => menuTxt.setColor("#93c5fd"));
+
+    const restart = (): void => {
+      this.cameras.main.fadeOut(220, 0, 0, 0);
+      this.time.delayedCall(220, () => this.scene.start("play"));
+    };
+    const menu = (): void => {
+      this.cameras.main.fadeOut(220, 0, 0, 0);
+      this.time.delayedCall(220, () => this.scene.start("menu"));
+    };
+
+    btnTxt.on("pointerdown", restart);
+    menuTxt.on("pointerdown", menu);
+    this.input.keyboard?.once("keydown-SPACE", restart);
+    this.input.keyboard?.once("keydown-ENTER", restart);
+    this.input.keyboard?.once("keydown-ESC", menu);
+
+    // Animate panel in
+    this.tweens.add({
+      targets: [panel, overlay],
+      alpha: { from: 0, to: 1 },
+      duration: 320,
+      ease: "Quad.easeOut",
+    });
+
+    this.cameras.main.fadeIn(280, 0, 0, 0);
+  }
+
+  private spawnConfetti(): void {
+    const colors = [0xff4d6d, 0xfbbf24, 0x22c55e, 0x3b82f6, 0xa855f7, 0xf97316];
+    for (let i = 0; i < 28; i++) {
+      const x = Phaser.Math.Between(20, VW - 20);
+      const color = colors[i % colors.length] ?? 0xffffff;
+      const dot = this.add.graphics();
+      dot.fillStyle(color, 1);
+      dot.fillCircle(0, 0, Phaser.Math.Between(4, 9));
+      dot.x = x;
+      dot.y = -20;
+      this.tweens.add({
+        targets: dot,
+        y: VH + 40,
+        x: x + Phaser.Math.Between(-60, 60),
+        angle: Phaser.Math.Between(-180, 180),
+        duration: Phaser.Math.Between(1200, 2800),
+        delay: Phaser.Math.Between(0, 900),
+        ease: "Quad.easeIn",
+        alpha: { from: 1, to: 0.4 },
+      });
+    }
   }
 }
 
@@ -575,7 +733,6 @@ class PlayScene extends Phaser.Scene {
   private starChance = 0.045;
   private level = 1;
 
-  // Basket touch drag offset
   private dragOffsetX = 0;
   private isDragging = false;
 
@@ -595,6 +752,7 @@ class PlayScene extends Phaser.Scene {
     this.starChance = 0.045;
     this.level = 1;
     this.isDragging = false;
+    this.heartIcons = [];
     this.onScore(0);
 
     this.drawBackground();
@@ -608,7 +766,7 @@ class PlayScene extends Phaser.Scene {
     this.cameras.main.fadeIn(280, 0, 0, 0);
   }
 
-  // ── Background + scenery ────────────────────────────────────────────────────
+  // ── Background ──────────────────────────────────────────────────────────────
 
   private drawBackground(): void {
     const bg = this.add.graphics();
@@ -621,13 +779,11 @@ class PlayScene extends Phaser.Scene {
   }
 
   private drawScenery(): void {
-    // Scrolling clouds
     for (let i = 0; i < 4; i++) {
       const startX = Phaser.Math.Between(0, VW);
       const cy = 52 + i * 28;
       const sc = 0.52 + i * 0.1;
       const cloud = this.add.image(startX, cy, "cloud").setAlpha(0.72).setScale(sc);
-      const totalDist = VW + 160;
       const speed = 24000 + i * 5500;
       const elapsed = (startX / VW) * speed;
       this.tweens.add({
@@ -643,10 +799,7 @@ class PlayScene extends Phaser.Scene {
           });
         },
       });
-      void totalDist; // suppress unused
     }
-
-    // Flanking trees
     this.add.image(22, VH - 20, "tree").setScale(0.88).setOrigin(0.5, 1).setAlpha(0.92);
     this.add.image(VW - 22, VH - 20, "tree").setScale(1.02).setOrigin(0.5, 1).setAlpha(0.92);
   }
@@ -679,7 +832,6 @@ class PlayScene extends Phaser.Scene {
       .setOrigin(0.5, 0.5)
       .setDepth(11);
 
-    this.heartIcons = [];
     for (let i = 0; i < MAX_LIVES; i++) {
       const h = this.add
         .text(VW - 16 - i * 28, 31, "❤️", { fontSize: "20px" })
@@ -689,7 +841,7 @@ class PlayScene extends Phaser.Scene {
     }
 
     this.comboLabel = this.add
-      .text(VW / 2, 66, "", {
+      .text(VW / 2, 68, "", {
         fontFamily: "Fraunces, serif",
         fontSize: "18px",
         color: "#fbbf24",
@@ -715,7 +867,6 @@ class PlayScene extends Phaser.Scene {
   // ── Input ────────────────────────────────────────────────────────────────────
 
   private buildInput(): void {
-    // Pointer drag — track offset so basket doesn't snap to center of finger
     this.input.on("pointerdown", (p: Phaser.Input.Pointer) => {
       if (this.over) return;
       this.isDragging = true;
@@ -727,7 +878,6 @@ class PlayScene extends Phaser.Scene {
     });
     this.input.on("pointerup", () => { this.isDragging = false; });
     this.input.on("pointerupoutside", () => { this.isDragging = false; });
-
     this.cursors = this.input.keyboard?.createCursorKeys();
   }
 
@@ -767,12 +917,11 @@ class PlayScene extends Phaser.Scene {
     });
   }
 
-  // ── Update loop ──────────────────────────────────────────────────────────────
+  // ── Update ───────────────────────────────────────────────────────────────────
 
   update(_time: number, delta: number): void {
     if (this.over) return;
 
-    // Keyboard movement
     if (this.cursors) {
       const speed = BASKET_SPEED * (delta / 1000);
       if (this.cursors.left?.isDown) {
@@ -782,11 +931,9 @@ class PlayScene extends Phaser.Scene {
       }
     }
 
-    // Sync physics body to basket image
     const body = this.basket.body as Phaser.Physics.Arcade.Body;
     body.reset(this.basket.x, this.basket.y);
 
-    // Cull drops that fell off screen
     this.drops.getChildren().forEach((obj) => {
       const drop = obj as Phaser.GameObjects.Image;
       if (!drop.active) return;
@@ -824,27 +971,27 @@ class PlayScene extends Phaser.Scene {
     } else {
       const fi = Phaser.Math.Between(0, FRUITS.length - 1);
       key = `fruit_${fi}`;
-      r = FRUITS[fi]!.r;
       fd.fruitIndex = fi;
+      r = FRUITS[fi]?.r ?? 16;
     }
 
-    const x = Phaser.Math.Between(r + 14, VW - r - 14);
-    const drop = this.add.image(x, -r - 14, key).setDepth(4);
-    drop.setData("fd", fd);
-    drop.setActive(true);
-
+    const margin = r + 16;
+    const x = Phaser.Math.Between(margin, VW - margin);
+    const drop = this.add.image(x, -r - 8, key).setDepth(4);
     this.physics.add.existing(drop);
     const body = drop.body as Phaser.Physics.Arcade.Body;
     body.setAllowGravity(false);
-    body.setCircle(r, drop.width / 2 - r, drop.height / 2 - r);
-    const speedVar = Phaser.Math.Between(-20, 30);
-    body.setVelocityY(this.dropSpeed + speedVar);
+    body.setVelocityY(this.dropSpeed + Phaser.Math.Between(-18, 18));
+    body.setCircle(r, (drop.width / 2) - r, (drop.height / 2) - r);
 
-    // Gentle wobble
+    drop.setData("fd", fd);
+    this.drops.add(drop);
+
+    // Slight wobble on the way down
     this.tweens.add({
       targets: drop,
-      angle: Phaser.Math.Between(-14, 14),
-      duration: 320 + Phaser.Math.Between(0, 280),
+      angle: Phaser.Math.Between(-8, 8),
+      duration: 700,
       yoyo: true,
       repeat: -1,
       ease: "Sine.easeInOut",
@@ -854,98 +1001,143 @@ class PlayScene extends Phaser.Scene {
     if (fd.isStar) {
       this.tweens.add({
         targets: drop,
-        scaleX: 1.22,
-        scaleY: 1.22,
-        duration: 280,
+        scaleX: 1.18,
+        scaleY: 1.18,
+        duration: 380,
         yoyo: true,
         repeat: -1,
         ease: "Sine.easeInOut",
       });
     }
-
-    // Bomb warning flash when near bottom
-    if (fd.isBomb) {
-      this.time.addEvent({
-        delay: 200,
-        loop: true,
-        callback: () => {
-          if (!drop.active || drop.y > VH - 80) return;
-          if (drop.y > VH * 0.6) {
-            drop.setTint(0xff4444);
-            this.time.delayedCall(80, () => { if (drop.active) drop.clearTint(); });
-          }
-        },
-      });
-    }
-
-    this.drops.add(drop);
   }
 
-  // ── Catch handlers ───────────────────────────────────────────────────────────
+  // ── Catch / Miss handlers ────────────────────────────────────────────────────
 
   private onFruitCaught(drop: Phaser.GameObjects.Image, fi: number): void {
-    const fr = FRUITS[fi]!;
+    const fr = FRUITS[fi];
+    if (!fr) return;
     this.combo++;
-    const mult = this.combo >= 8 ? 4 : this.combo >= 5 ? 3 : this.combo >= 3 ? 2 : 1;
-    const pts = fr.pts * mult;
+    this.resetComboTimer();
+
+    const multiplier = Math.floor(this.combo / 5) + 1;
+    const pts = fr.pts * multiplier;
     this.score += pts;
     this.onScore(this.score);
-    this.saveHighScore();
+    this.scoreText.setText(String(this.score));
 
-    this.resetComboTimer();
-    this.updateScoreText();
-    this.showComboLabel();
-    this.spawnScorePopup(pts, fr.color, mult);
-    this.spawnBurst(drop.x, drop.y, fr.color, fr.shine);
-    this.basketBounce();
     playCatchSound(this, this.combo);
-    this.destroyDrop(drop);
+    this.spawnPopLabel(drop.x, drop.y, `+${pts}`, 0x4ade80);
+    this.spawnBurst(drop.x, drop.y, fr.color);
+
+    // Combo banner
+    if (this.combo >= 3) {
+      const msgs = ["Nice!", "Great!", "Amazing!", "COMBO!", "FEVER!"];
+      const idx = Math.min(Math.floor(this.combo / 3), msgs.length - 1);
+      this.showCombo(`${msgs[idx] ?? "COMBO!"} x${this.combo}`);
+    }
+
+    // Score pop
+    this.tweens.add({
+      targets: this.scoreText,
+      scaleX: 1.28,
+      scaleY: 1.28,
+      duration: 90,
+      yoyo: true,
+      ease: "Quad.easeOut",
+    });
+
+    drop.destroy();
   }
 
   private onStarCaught(drop: Phaser.GameObjects.Image): void {
-    this.combo += 3;
-    const pts = STAR_FRUIT.pts;
-    this.score += pts;
-    this.onScore(this.score);
-    this.saveHighScore();
-
+    this.combo += 2;
     this.resetComboTimer();
-    this.updateScoreText();
-    this.showComboLabel();
-    this.spawnScorePopup(pts, STAR_FRUIT.color, 0);
-    this.spawnStarBurst(drop.x, drop.y);
-    this.basketBounce();
+    this.score += STAR_FRUIT.pts;
+    this.onScore(this.score);
+    this.scoreText.setText(String(this.score));
+
     playStarSound(this);
-    this.cameras.main.flash(180, 255, 235, 80);
-    this.destroyDrop(drop);
+    this.spawnPopLabel(drop.x, drop.y, `⭐ +${STAR_FRUIT.pts}`, 0xfbbf24);
+    this.spawnBurst(drop.x, drop.y, STAR_FRUIT.color, 20);
+    this.showCombo(`✨ STAR! ✨`);
+
+    // Camera flash
+    this.cameras.main.flash(180, 255, 220, 100);
+
+    drop.destroy();
   }
 
   private onBombCaught(drop: Phaser.GameObjects.Image): void {
     this.combo = 0;
-    this.tweens.add({ targets: this.comboLabel, alpha: 0, duration: 140 });
-    this.cameras.main.flash(320, 230, 40, 40);
-    this.cameras.main.shake(260, 0.016);
-    playBombSound(this);
-    this.spawnExplosion(drop.x, drop.y);
-    this.destroyDrop(drop);
     this.loseLife();
-  }
+    playBombSound(this);
+    this.spawnPopLabel(drop.x, drop.y, "💥 BOOM!", 0xf87171);
+    this.spawnBurst(drop.x, drop.y, 0x1a1a2e, 14);
 
-  private loseLife(): void {
-    if (this.over) return;
-    this.lives = Math.max(0, this.lives - 1);
-    this.updateHearts();
-    if (this.lives <= 0) {
-      this.triggerGameOver();
-    }
+    // Camera shake
+    this.cameras.main.shake(280, 0.014);
+    this.cameras.main.flash(160, 255, 80, 80);
+
+    drop.destroy();
   }
 
   private missedFruit(): void {
-    if (this.over) return;
     this.combo = 0;
-    this.tweens.add({ targets: this.comboLabel, alpha: 0, duration: 140 });
-    playMissSound(this);
     this.loseLife();
+    playMissSound(this);
+  }
+
+  // ── Life management ──────────────────────────────────────────────────────────
+
+  private loseLife(): void {
+    if (this.over) return;
+    this.lives--;
+    this.updateHearts();
+
+    if (this.lives <= 0) {
+      this.triggerGameOver();
+    } else {
+      // Basket flash red
+      this.tweens.add({
+        targets: this.basket,
+        tint: 0xff4444,
+        duration: 120,
+        yoyo: true,
+        repeat: 2,
+        onComplete: () => { this.basket.setTint(0xffffff); },
+      });
+    }
+  }
+
+  private updateHearts(): void {
+    this.heartIcons.forEach((h, i) => {
+      h.setText(i < this.lives ? "❤️" : "🖤");
+      h.setAlpha(i < this.lives ? 1 : 0.4);
+    });
+  }
+
+  // ── Game over ────────────────────────────────────────────────────────────────
+
+  private triggerGameOver(): void {
+    this.over = true;
+    this.spawnTimer?.remove();
+    this.diffTimer?.remove();
+    this.comboTimer?.remove();
+
+    // Save high score
+    const prev = parseInt(localStorage.getItem(HS_KEY) ?? "0", 10);
+    const isNewBest = this.score > prev;
+    if (isNewBest) localStorage.setItem(HS_KEY, String(this.score));
+
+    playGameOverSound(this);
+    this.cameras.main.shake(350, 0.018);
+
+    this.time.delayedCall(700, () => {
+      this.cameras.main.fadeOut(320, 0, 0, 0);
+      this.time.delayedCall(320, () => {
+        this.scene.start("gameover", { score: this.score, isNewBest });
+      });
+    });
   }
 
   // ── Difficulty ramp ──────────────────────────────────────────────────────────
@@ -955,12 +1147,11 @@ class PlayScene extends Phaser.Scene {
     this.level++;
     this.levelText.setText(`Lv.${this.level}`);
 
-    this.dropSpeed = Math.min(this.dropSpeed + 18, 340);
-    this.spawnDelay = Math.max(this.spawnDelay - 60, 380);
-    this.bombChance = Math.min(this.bombChance + 0.015, 0.22);
+    this.dropSpeed = Math.min(this.dropSpeed + 18, 310);
+    this.spawnDelay = Math.max(this.spawnDelay - 55, 390);
+    this.bombChance = Math.min(this.bombChance + 0.012, 0.22);
     this.starChance = Math.min(this.starChance + 0.005, 0.09);
 
-    // Restart spawn timer with new delay
     this.spawnTimer?.remove();
     this.spawnTimer = this.time.addEvent({
       delay: this.spawnDelay,
@@ -969,451 +1160,118 @@ class PlayScene extends Phaser.Scene {
       callbackScope: this,
     });
 
-    this.showLevelUpBanner();
     playLevelUpSound(this);
+    this.showLevelBanner();
   }
 
-  private showLevelUpBanner(): void {
-    const banner = this.add
-      .text(VW / 2, VH / 2, `⬆ Level ${this.level}!`, {
+  // ── Visual helpers ───────────────────────────────────────────────────────────
+
+  private spawnPopLabel(x: number, y: number, msg: string, color: number): void {
+    const hex = "#" + color.toString(16).padStart(6, "0");
+    const txt = this.add
+      .text(x, y - 10, msg, {
         fontFamily: "Fraunces, serif",
-        fontSize: "38px",
+        fontSize: "20px",
+        color: hex,
+        stroke: "#000000",
+        strokeThickness: 4,
+      })
+      .setOrigin(0.5, 1)
+      .setDepth(20);
+
+    this.tweens.add({
+      targets: txt,
+      y: y - 68,
+      alpha: 0,
+      scaleX: 1.3,
+      scaleY: 1.3,
+      duration: 750,
+      ease: "Quad.easeOut",
+      onComplete: () => txt.destroy(),
+    });
+  }
+
+  private spawnBurst(x: number, y: number, color: number, count = 10): void {
+    for (let i = 0; i < count; i++) {
+      const angle = (i / count) * Math.PI * 2;
+      const speed = Phaser.Math.Between(55, 130);
+      const dot = this.add.graphics().setDepth(15);
+      dot.fillStyle(color, 1);
+      dot.fillCircle(0, 0, Phaser.Math.Between(3, 6));
+      dot.x = x;
+      dot.y = y;
+      this.tweens.add({
+        targets: dot,
+        x: x + Math.cos(angle) * speed,
+        y: y + Math.sin(angle) * speed,
+        alpha: 0,
+        scaleX: 0.2,
+        scaleY: 0.2,
+        duration: Phaser.Math.Between(380, 620),
+        ease: "Quad.easeOut",
+        onComplete: () => dot.destroy(),
+      });
+    }
+  }
+
+  private showCombo(msg: string): void {
+    this.comboLabel.setText(msg).setAlpha(1).setScale(1.3);
+    this.tweens.add({
+      targets: this.comboLabel,
+      scaleX: 1,
+      scaleY: 1,
+      duration: 180,
+      ease: "Back.easeOut",
+    });
+    this.tweens.add({
+      targets: this.comboLabel,
+      alpha: 0,
+      duration: 900,
+      delay: 700,
+      ease: "Quad.easeIn",
+    });
+  }
+
+  private showLevelBanner(): void {
+    const banner = this.add
+      .text(VW / 2, VH / 2 - 30, `🎉 Level ${this.level}!`, {
+        fontFamily: "Fraunces, serif",
+        fontSize: "44px",
         color: "#fbbf24",
         stroke: "#000000",
-        strokeThickness: 5,
+        strokeThickness: 6,
       })
       .setOrigin(0.5)
-      .setDepth(20)
+      .setDepth(30)
       .setAlpha(0);
 
     this.tweens.add({
       targets: banner,
-      alpha: { from: 0, to: 1 },
-      y: VH / 2 - 30,
-      duration: 280,
+      alpha: 1,
+      scaleX: { from: 0.5, to: 1 },
+      scaleY: { from: 0.5, to: 1 },
+      duration: 320,
       ease: "Back.easeOut",
-      onComplete: () => {
-        this.tweens.add({
-          targets: banner,
-          alpha: 0,
-          y: VH / 2 - 65,
-          duration: 400,
-          delay: 700,
-          ease: "Sine.easeIn",
-          onComplete: () => banner.destroy(),
-        });
-      },
     });
-  }
-
-  // ── Visual feedback ──────────────────────────────────────────────────────────
-
-  private spawnScorePopup(pts: number, color: number, mult: number): void {
-    const label = mult > 1 ? `+${pts} ×${mult}!` : `+${pts}`;
-    const col = "#" + color.toString(16).padStart(6, "0");
-    const pop = this.add
-      .text(
-        this.basket.x + Phaser.Math.Between(-28, 28),
-        this.basket.y - 28,
-        label,
-        {
-          fontFamily: "Fraunces, serif",
-          fontSize: mult > 1 ? "22px" : "18px",
-          color: mult > 1 ? "#fbbf24" : col,
-          stroke: "#000000",
-          strokeThickness: 3,
-        }
-      )
-      .setOrigin(0.5)
-      .setDepth(15);
-
     this.tweens.add({
-      targets: pop,
-      y: pop.y - 52,
+      targets: banner,
       alpha: 0,
-      scaleX: mult > 1 ? 1.3 : 1,
-      scaleY: mult > 1 ? 1.3 : 1,
-      duration: 700,
-      ease: "Sine.easeOut",
-      onComplete: () => pop.destroy(),
+      duration: 500,
+      delay: 1100,
+      ease: "Quad.easeIn",
+      onComplete: () => banner.destroy(),
     });
-  }
-
-  private spawnBurst(x: number, y: number, color: number, shine: number): void {
-    const count = 8;
-    for (let i = 0; i < count; i++) {
-      const angle = (i / count) * Math.PI * 2;
-      const speed = Phaser.Math.Between(55, 110);
-      const vx = Math.cos(angle) * speed;
-      const vy = Math.sin(angle) * speed;
-      const col = i % 2 === 0 ? color : shine;
-
-      const dot = this.add.graphics().setDepth(14);
-      const dotR = Phaser.Math.Between(3, 6);
-      dot.fillStyle(col, 1);
-      dot.fillCircle(x, y, dotR);
-
-      this.tweens.add({
-        targets: dot,
-        x: vx * 0.55,
-        y: vy * 0.55,
-        alpha: 0,
-        duration: 380,
-        ease: "Sine.easeOut",
-        onComplete: () => dot.destroy(),
-      });
-    }
-  }
-
-  private spawnStarBurst(x: number, y: number): void {
-    const count = 12;
-    for (let i = 0; i < count; i++) {
-      const angle = (i / count) * Math.PI * 2;
-      const speed = Phaser.Math.Between(70, 140);
-      const vx = Math.cos(angle) * speed;
-      const vy = Math.sin(angle) * speed;
-      const colors = [0xfbbf24, 0xfef08a, 0xf59e0b, 0xfde68a];
-      const col = colors[i % colors.length]!;
-
-      const dot = this.add.graphics().setDepth(14);
-      dot.fillStyle(col, 1);
-      const r = Phaser.Math.Between(3, 7);
-      dot.fillCircle(x, y, r);
-
-      this.tweens.add({
-        targets: dot,
-        x: vx * 0.6,
-        y: vy * 0.6,
-        alpha: 0,
-        scaleX: 1.5,
-        scaleY: 1.5,
-        duration: 480,
-        ease: "Sine.easeOut",
-        onComplete: () => dot.destroy(),
-      });
-    }
-  }
-
-  private spawnExplosion(x: number, y: number): void {
-    const count = 14;
-    for (let i = 0; i < count; i++) {
-      const angle = (i / count) * Math.PI * 2;
-      const speed = Phaser.Math.Between(60, 130);
-      const vx = Math.cos(angle) * speed;
-      const vy = Math.sin(angle) * speed;
-      const colors = [0xff4444, 0xff8800, 0xffcc00, 0x1a1a2e];
-      const col = colors[i % colors.length]!;
-
-      const dot = this.add.graphics().setDepth(14);
-      dot.fillStyle(col, 1);
-      const r = Phaser.Math.Between(4, 8);
-      dot.fillCircle(x, y, r);
-
-      this.tweens.add({
-        targets: dot,
-        x: vx * 0.65,
-        y: vy * 0.65,
-        alpha: 0,
-        duration: 450,
-        ease: "Sine.easeOut",
-        onComplete: () => dot.destroy(),
-      });
-    }
-
-    // Smoke ring
-    const smoke = this.add.graphics().setDepth(13);
-    smoke.lineStyle(4, 0x888888, 0.7);
-    smoke.strokeCircle(x, y, 8);
-    this.tweens.add({
-      targets: smoke,
-      scaleX: 3.5,
-      scaleY: 3.5,
-      alpha: 0,
-      duration: 380,
-      ease: "Sine.easeOut",
-      onComplete: () => smoke.destroy(),
-    });
-  }
-
-  private basketBounce(): void {
-    this.tweens.add({
-      targets: this.basket,
-      scaleY: 0.82,
-      duration: 70,
-      yoyo: true,
-      ease: "Sine.easeInOut",
-    });
-  }
-
-  private showComboLabel(): void {
-    if (this.combo < 2) {
-      this.comboLabel.setAlpha(0);
-      return;
-    }
-    const labels: Record<number, string> = {
-      2: "Nice! ×2",
-      3: "Great! ×2",
-      5: "Awesome! ×3",
-      8: "UNSTOPPABLE! ×4",
-    };
-    const text =
-      this.combo >= 8
-        ? labels[8]!
-        : this.combo >= 5
-        ? labels[5]!
-        : this.combo >= 3
-        ? labels[3]!
-        : labels[2]!;
-
-    this.comboLabel.setText(text);
-    this.tweens.add({ targets: this.comboLabel, alpha: 1, duration: 150 });
   }
 
   private resetComboTimer(): void {
     this.comboTimer?.remove();
-    this.comboTimer = this.time.delayedCall(1900, () => {
+    this.comboTimer = this.time.delayedCall(2200, () => {
       this.combo = 0;
-      this.tweens.add({ targets: this.comboLabel, alpha: 0, duration: 200 });
-    });
-  }
-
-  private updateScoreText(): void {
-    this.scoreText.setText(String(this.score));
-    this.tweens.add({
-      targets: this.scoreText,
-      scaleX: 1.22,
-      scaleY: 1.22,
-      duration: 90,
-      yoyo: true,
-      ease: "Sine.easeOut",
-    });
-  }
-
-  private updateHearts(): void {
-    this.heartIcons.forEach((h, i) => {
-      if (i < this.lives) {
-        h.setText("❤️");
-        h.setAlpha(1);
-      } else {
-        h.setText("🖤");
-        h.setAlpha(0.45);
-      }
-    });
-
-    // Shake the lost heart
-    const lostHeart = this.heartIcons[this.lives];
-    if (lostHeart) {
-      this.tweens.add({
-        targets: lostHeart,
-        x: lostHeart.x + 5,
-        duration: 60,
-        yoyo: true,
-        repeat: 3,
-        ease: "Sine.easeInOut",
-      });
-    }
-  }
-
-  private saveHighScore(): void {
-    const prev = parseInt(localStorage.getItem(HS_KEY) ?? "0", 10);
-    if (this.score > prev) {
-      localStorage.setItem(HS_KEY, String(this.score));
-    }
-  }
-
-  private destroyDrop(drop: Phaser.GameObjects.Image): void {
-    this.tweens.killTweensOf(drop);
-    drop.setActive(false);
-    drop.destroy();
-  }
-
-  // ── Game Over ────────────────────────────────────────────────────────────────
-
-  private triggerGameOver(): void {
-    this.over = true;
-    this.spawnTimer?.remove();
-    this.diffTimer?.remove();
-    this.comboTimer?.remove();
-
-    // Fade out remaining drops
-    this.drops.getChildren().forEach((obj) => {
-      const d = obj as Phaser.GameObjects.Image;
-      this.tweens.add({ targets: d, alpha: 0, duration: 300 });
-    });
-
-    playGameOverSound(this);
-    this.time.delayedCall(500, () => this.showGameOverPanel());
-  }
-
-  private showGameOverPanel(): void {
-    const hs = parseInt(localStorage.getItem(HS_KEY) ?? "0", 10);
-    const isNewBest = this.score >= hs && this.score > 0;
-
-    // Dim overlay
-    const overlay = this.add.graphics().setDepth(18);
-    overlay.fillStyle(0x000000, 0);
-    overlay.fillRect(0, 0, VW, VH);
-    this.tweens.add({ targets: overlay, fillAlpha: 0.55, duration: 350 });
-
-    // Panel
-    const panelW = 300;
-    const panelH = isNewBest ? 310 : 290;
-    const panelX = VW / 2 - panelW / 2;
-    const panelY = VH / 2 - panelH / 2;
-
-    const panel = this.add.graphics().setDepth(19);
-    panel.fillStyle(0x1e3a5f, 0.96);
-    panel.fillRoundedRect(panelX, panelY, panelW, panelH, 20);
-    panel.lineStyle(3, 0x38bdf8, 0.8);
-    panel.strokeRoundedRect(panelX, panelY, panelW, panelH, 20);
-
-    const cx = VW / 2;
-    let ty = panelY + 32;
-
-    this.add
-      .text(cx, ty, "Game Over!", {
-        fontFamily: "Fraunces, serif",
-        fontSize: "38px",
-        color: "#f87171",
-        stroke: "#000000",
-        strokeThickness: 4,
-      })
-      .setOrigin(0.5)
-      .setDepth(20);
-    ty += 50;
-
-    this.add
-      .text(cx, ty, `Score: ${this.score}`, {
-        fontFamily: "Fraunces, serif",
-        fontSize: "28px",
-        color: "#ffffff",
-        stroke: "#000000",
-        strokeThickness: 3,
-      })
-      .setOrigin(0.5)
-      .setDepth(20);
-    ty += 38;
-
-    if (isNewBest) {
-      const newBest = this.add
-        .text(cx, ty, "🏆 NEW BEST!", {
-          fontFamily: "Manrope, sans-serif",
-          fontSize: "18px",
-          color: "#fbbf24",
-          fontStyle: "bold",
-        })
-        .setOrigin(0.5)
-        .setDepth(20);
-      this.tweens.add({
-        targets: newBest,
-        scaleX: 1.12,
-        scaleY: 1.12,
-        duration: 400,
-        yoyo: true,
-        repeat: -1,
-        ease: "Sine.easeInOut",
-      });
-      ty += 36;
-    } else if (hs > 0) {
-      this.add
-        .text(cx, ty, `Best: ${hs}`, {
-          fontFamily: "Manrope, sans-serif",
-          fontSize: "16px",
-          color: "#94a3b8",
-        })
-        .setOrigin(0.5)
-        .setDepth(20);
-      ty += 32;
-    }
-
-    this.add
-      .text(cx, ty, `Level reached: ${this.level}`, {
-        fontFamily: "Manrope, sans-serif",
-        fontSize: "14px",
-        color: "#7dd3fc",
-      })
-      .setOrigin(0.5)
-      .setDepth(20);
-    ty += 36;
-
-    // Play Again button
-    const btnW = 200;
-    const btnH = 54;
-    const btnX = cx - btnW / 2;
-    const btnBg = this.add.graphics().setDepth(20);
-    btnBg.fillStyle(0x15803d, 1);
-    btnBg.fillRoundedRect(btnX, ty, btnW, btnH, 27);
-    btnBg.fillStyle(0x22c55e, 1);
-    btnBg.fillRoundedRect(btnX, ty - 3, btnW, btnH - 2, 26);
-
-    const playBtn = this.add
-      .text(cx, ty + btnH / 2 - 2, "▶  Play Again", {
-        fontFamily: "Manrope, sans-serif",
-        fontSize: "22px",
-        color: "#ffffff",
-        fontStyle: "bold",
-      })
-      .setOrigin(0.5)
-      .setDepth(21)
-      .setInteractive({ useHandCursor: true });
-
-    this.tweens.add({
-      targets: [btnBg, playBtn],
-      scaleX: 1.04,
-      scaleY: 1.04,
-      duration: 700,
-      yoyo: true,
-      repeat: -1,
-      ease: "Sine.easeInOut",
-    });
-
-    ty += btnH + 14;
-
-    // Menu button
-    const menuBtn = this.add
-      .text(cx, ty, "↩ Main Menu", {
-        fontFamily: "Manrope, sans-serif",
-        fontSize: "15px",
-        color: "#94a3b8",
-      })
-      .setOrigin(0.5)
-      .setDepth(21)
-      .setInteractive({ useHandCursor: true });
-
-    playBtn.on("pointerdown", () => {
-      this.cameras.main.fadeOut(220, 0, 0, 0);
-      this.time.delayedCall(220, () => this.scene.restart());
-    });
-    menuBtn.on("pointerdown", () => {
-      this.cameras.main.fadeOut(220, 0, 0, 0);
-      this.time.delayedCall(220, () => this.scene.start("menu"));
-    });
-
-    // Keyboard shortcuts
-    this.input.keyboard?.once("keydown-SPACE", () => {
-      this.cameras.main.fadeOut(220, 0, 0, 0);
-      this.time.delayedCall(220, () => this.scene.restart());
-    });
-    this.input.keyboard?.once("keydown-ENTER", () => {
-      this.cameras.main.fadeOut(220, 0, 0, 0);
-      this.time.delayedCall(220, () => this.scene.restart());
-    });
-
-    // Animate panel in
-    panel.setScale(0.85);
-    panel.setAlpha(0);
-    this.tweens.add({
-      targets: panel,
-      scaleX: 1,
-      scaleY: 1,
-      alpha: 1,
-      duration: 280,
-      ease: "Back.easeOut",
     });
   }
 }
 
-// ─── Entry point ──────────────────────────────────────────────────────────────
+// ─── startGame export ─────────────────────────────────────────────────────────
 
 export function startGame(
   parent: HTMLElement,
@@ -1425,16 +1283,22 @@ export function startGame(
     height: VH,
     parent,
     backgroundColor: "#0ea5e9",
-    physics: {
-      default: "arcade",
-      arcade: { gravity: { x: 0, y: 0 }, debug: false },
-    },
     scale: {
       mode: Phaser.Scale.FIT,
       autoCenter: Phaser.Scale.CENTER_BOTH,
     },
-    scene: [MenuScene, new PlayScene(onScore)],
+    physics: {
+      default: "arcade",
+      arcade: { gravity: { x: 0, y: 0 }, debug: false },
+    },
+    scene: [
+      MenuScene,
+      new PlayScene(onScore),
+      GameOverScene,
+    ],
   });
 
-  return () => game.destroy(true);
+  return () => {
+    game.destroy(true);
+  };
 }

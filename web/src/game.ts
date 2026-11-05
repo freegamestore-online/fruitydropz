@@ -51,7 +51,7 @@ function buildFruitTex(scene: Phaser.Scene, key: string, def: FruitDef): void {
   const size = r * 2 + 10;
   const cx = size / 2;
   const cy = size / 2;
-  const g = scene.make.graphics({ add: false });
+  const g = scene.make.graphics({}, false);
 
   g.fillStyle(0x000000, 0.2);
   g.fillCircle(cx + 2, cy + 3, r - 1);
@@ -78,21 +78,21 @@ function buildStarTex(scene: Phaser.Scene): void {
   const size = r * 2 + 16;
   const cx = size / 2;
   const cy = size / 2;
-  const g = scene.make.graphics({ add: false });
+  const g = scene.make.graphics({}, false);
 
   g.fillStyle(0xfef08a, 0.3);
   g.fillCircle(cx, cy, r + 5);
 
   const outer = r;
   const inner = r * 0.42;
-  const ptsA: { x: number; y: number }[] = [];
-  const ptsB: { x: number; y: number }[] = [];
+  const ptsA: Phaser.Math.Vector2[] = [];
+  const ptsB: Phaser.Math.Vector2[] = [];
   for (let i = 0; i < 10; i++) {
     const ang = (i * Math.PI) / 5 - Math.PI / 2;
     const radA = i % 2 === 0 ? outer : inner;
-    ptsA.push({ x: cx + Math.cos(ang) * radA, y: cy + Math.sin(ang) * radA });
+    ptsA.push(new Phaser.Math.Vector2(cx + Math.cos(ang) * radA, cy + Math.sin(ang) * radA));
     const radB = i % 2 === 0 ? outer - 2 : inner;
-    ptsB.push({ x: cx + Math.cos(ang) * radB, y: cy + Math.sin(ang) * radB });
+    ptsB.push(new Phaser.Math.Vector2(cx + Math.cos(ang) * radB, cy + Math.sin(ang) * radB));
   }
   g.fillStyle(STAR_FRUIT.dark, 1);
   g.fillPoints(ptsA, true);
@@ -114,7 +114,7 @@ function buildBombTex(scene: Phaser.Scene): void {
   const size = r * 2 + 16;
   const cx = size / 2;
   const cy = size / 2 + 2;
-  const g = scene.make.graphics({ add: false });
+  const g = scene.make.graphics({}, false);
 
   g.fillStyle(0x000000, 0.22);
   g.fillCircle(cx + 2, cy + 3, r - 1);
@@ -145,7 +145,7 @@ function buildBasketTex(scene: Phaser.Scene): void {
   if (scene.textures.exists("basket")) return;
   const W = 100;
   const H = 34;
-  const g = scene.make.graphics({ add: false });
+  const g = scene.make.graphics({}, false);
 
   g.fillStyle(0x000000, 0.18);
   g.fillRoundedRect(3, 4, W, H, 9);
@@ -173,7 +173,7 @@ function buildBasketTex(scene: Phaser.Scene): void {
 
 function buildTreeTex(scene: Phaser.Scene): void {
   if (scene.textures.exists("tree")) return;
-  const g = scene.make.graphics({ add: false });
+  const g = scene.make.graphics({}, false);
   g.fillStyle(0x78350f, 1);
   g.fillRect(18, 52, 14, 28);
   g.fillStyle(0x14532d, 0.5);
@@ -190,7 +190,7 @@ function buildTreeTex(scene: Phaser.Scene): void {
 
 function buildCloudTex(scene: Phaser.Scene): void {
   if (scene.textures.exists("cloud")) return;
-  const g = scene.make.graphics({ add: false });
+  const g = scene.make.graphics({}, false);
   g.fillStyle(0xffffff, 0.88);
   g.fillEllipse(60, 32, 82, 38);
   g.fillEllipse(38, 27, 58, 34);
@@ -202,7 +202,7 @@ function buildCloudTex(scene: Phaser.Scene): void {
 
 function buildParticleTex(scene: Phaser.Scene): void {
   if (scene.textures.exists("particle")) return;
-  const g = scene.make.graphics({ add: false });
+  const g = scene.make.graphics({}, false);
   g.fillStyle(0xffffff, 1);
   g.fillCircle(6, 6, 6);
   g.generateTexture("particle", 12, 12);
